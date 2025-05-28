@@ -60,7 +60,7 @@ do
                 switch (response)
                 {
                     case "1":
-                        DeletandoItem(item, lista);
+                        DeletandoItem(item, ref lista);
                         response = "voltar";
                         break;
 
@@ -101,18 +101,45 @@ void MarcarComoComprado(int item, string[] lista)
     lista[item] += " (Comprado)";
 }
 
-void DeletandoItem(int item, string[] lista)
+void DeletandoItem(int item, ref string[] lista)
 {
     Console.WriteLine($"O item: {lista[item]} foi removido!");
-    OrdenandoItensDaLista(lista);
+    lista[item] = null;
+  lista =  OrdenandoItensDaLista(ref lista);
 }
 
-void OrdenandoItensDaLista(string[] lista)
+
+// impossivel alterar local de itens dentro de um array
+// criar uma array nova?
+string[] OrdenandoItensDaLista(ref string[] lista)
 {
-    for (int i = 0; i < TamanhoDaLista(lista); i++)
+    // percorrer lista e encontrar a quantidade de itens  != null
+    int indice = 0;
+    string[] novaLista = new string[TamanhoDaLista(lista)];
+    //alocar os itens != null de lista na novaLista
+    for (int i = 0; i < lista.Length; i++)
     {
-        lista[i] = lista[i + 1];
+        if (lista[i] != null)
+        {
+            novaLista[indice] = lista[i];
+            indice++;
+        }
     }
+    //recriar lista com os novos itens
+    lista = new string[TamanhoDaLista(novaLista)];
+    // alocar itens de novalista para lista
+    for (int i = 0; i < novaLista.Length; i++)
+    {
+        lista[i] = novaLista[i];
+    }
+    /*   int totalDeIndices = lista.Length - 1;
+for (int i = 0; i < lista.Length; i++)
+{
+    lista[i] = lista[totalDeIndices];
+    lista[totalDeIndices] = null;
+    totalDeIndices--;
+}*/
+    return lista;
 }
 // checar se é valido a conversao e converter para int
 
