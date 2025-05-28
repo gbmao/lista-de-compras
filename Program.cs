@@ -17,7 +17,7 @@ do
     switch (response)
     {
         case "1":
-            // aqui ele vai perguntar qual item vai entrar na lista
+
             do
             {
                 Console.WriteLine("Digite o nome do item(Separe por , se for mais de 1)");
@@ -37,46 +37,47 @@ do
             break;
         case "2":
             // onde iremos marcar os itens que comprar
-            while(true){
+            while (true)
+            {
                 MostrandoLista(lista);
                 Console.WriteLine("Digite o numero do item que deseja alterar ou digite 'voltar' para voltar ao menu anterior: ");
 
                 // resolver problema de digitar 2x
                 response = ResponseIsNull();
-                if (response.ToLower().Trim() == "voltar") break;                
+                if (response.ToLower().Trim() == "voltar") break;
                 int item = ConverterParaInt(response, lista);
-                
+                Console.WriteLine($"O que você deseja fazer com o item {lista[item]}");
 
-                do
+                //     do
+                //      {
+
+                Console.WriteLine("1. Deletar");
+                Console.WriteLine("2. Marcar como comprado");
+                Console.WriteLine(" Digite 'Voltar' para voltar ao menu anterior ");
+
+                response = ResponseIsNull();
+
+                switch (response)
                 {
-                    Console.WriteLine($"O que você deseja fazer com o item {lista[item]}");
-                    Console.WriteLine("1. Deletar");
-                    Console.WriteLine("2. Marcar como comprado");
-                    Console.WriteLine("3. Digite 'Voltar' para voltar ao menu anterior ");
-                    
-                    response = ResponseIsNull();
+                    case "1":
+                        DeletandoItem(item, lista);
+                        response = "voltar";
+                        break;
 
-                    switch (response)
-                    {
-                        case "1":
-                            DeletandoItem(item, lista);
-                            response = "voltar";
-                            break;
+                    case "2":
+                        MarcarComoComprado(item, lista);
+                        //response = "voltar";
+                        break;
 
-                        case "2":
-                            MarcarComoComprado(item, lista);
-                            //response = "voltar";
-                            break;
+                    default:
+                        Console.WriteLine($"{response} Não é uma opção válida\n");
+                        break;
+                }
 
-                        default:
-                            Console.WriteLine($"{response} Não é uma opção válida\n");
-                            break;
-                    }
-
-                } while (response != "voltar");
+                //   } while (response != "voltar");
 
 
-            } 
+            }
 
             break;
         case "3":
@@ -89,6 +90,12 @@ do
     }
 } while (response.ToLower().Trim() != "sair");
 
+
+
+// criar uma lista
+
+
+
 void MarcarComoComprado(int item, string[] lista)
 {
     lista[item] += " (Comprado)";
@@ -97,10 +104,16 @@ void MarcarComoComprado(int item, string[] lista)
 void DeletandoItem(int item, string[] lista)
 {
     Console.WriteLine($"O item: {lista[item]} foi removido!");
-    lista[item] = null;
-
+    OrdenandoItensDaLista(lista);
 }
 
+void OrdenandoItensDaLista(string[] lista)
+{
+    for (int i = 0; i < TamanhoDaLista(lista); i++)
+    {
+        lista[i] = lista[i + 1];
+    }
+}
 // checar se é valido a conversao e converter para int
 
 
@@ -111,7 +124,7 @@ int ConverterParaInt(string response, string[] lista)
     do
     {
 
-        response = ResponseIsNull();
+        //response = ResponseIsNull();
 
 
         Valido = int.TryParse(response, out intResponse);
@@ -162,6 +175,7 @@ void MostrandoLista(string[] lista)
 
         }
     }
+    Console.WriteLine();
 }
 
 
