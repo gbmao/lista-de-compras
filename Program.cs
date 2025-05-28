@@ -1,5 +1,7 @@
 ﻿// programa de lista de compras
 
+
+
 string[] lista = new string[50];
 string? response = "";
 do
@@ -35,22 +37,47 @@ do
             break;
         case "2":
             // onde iremos marcar os itens que comprar
+            while(true){
+                MostrandoLista(lista);
+                Console.WriteLine("Digite o numero do item que deseja alterar ou digite 'voltar' para voltar ao menu anterior: ");
+
+                // resolver problema de digitar 2x
+                response = ResponseIsNull();
+                if (response.ToLower().Trim() == "voltar") break;                
+                int item = ConverterParaInt(response, lista);
+                
+
+                do
+                {
+                    Console.WriteLine($"O que você deseja fazer com o item {lista[item]}");
+                    Console.WriteLine("1. Deletar");
+                    Console.WriteLine("2. Marcar como comprado");
+                    Console.WriteLine("3. Digite 'Voltar' para voltar ao menu anterior ");
+                    
+                    response = ResponseIsNull();
+
+                    switch (response)
+                    {
+                        case "1":
+                            DeletandoItem(item, lista);
+                            response = "voltar";
+                            break;
+
+                        case "2":
+                            MarcarComoComprado(item, lista);
+                            //response = "voltar";
+                            break;
+
+                        default:
+                            Console.WriteLine($"{response} Não é uma opção válida\n");
+                            break;
+                    }
+
+                } while (response != "voltar");
 
 
-            MostrandoLista(lista);
+            } 
 
-
-            ConverterParaInt(response, lista);
-
-
-            switch (response)
-            {
-                case "1":
-
-                    break;
-            }
-            Console.WriteLine("Aperte qualquer tecla para voltar ao menu principal");
-            Console.ReadLine();
             break;
         case "3":
             // mostra os itens
@@ -58,8 +85,21 @@ do
             Console.WriteLine("Aperte qualquer tecla para voltar ao menu principal");
             Console.ReadLine();
             break;
+            //adicionar um default em caso de digitação errado
     }
 } while (response.ToLower().Trim() != "sair");
+
+void MarcarComoComprado(int item, string[] lista)
+{
+    lista[item] += " (Comprado)";
+}
+
+void DeletandoItem(int item, string[] lista)
+{
+    Console.WriteLine($"O item: {lista[item]} foi removido!");
+    lista[item] = null;
+
+}
 
 // checar se é valido a conversao e converter para int
 
@@ -70,38 +110,55 @@ int ConverterParaInt(string response, string[] lista)
     bool Valido = false;
     do
     {
-        Console.WriteLine("Digite o numero do item que deseja alterar");
+
         response = ResponseIsNull();
 
-        try
-        {
-            intResponse = int.Parse(response);
-            Valido = true;
-        }
-        catch (FormatException)
+
+        Valido = int.TryParse(response, out intResponse);
+
+
+        if (Valido != true)
         {
             Console.WriteLine("Você deve digitar um número válido");
+            Console.WriteLine("Digite um número válido: ");
+
         }
-        if (intResponse > lista.Length || intResponse <= 0)
+        //lista.Lenght está pegando todos os numeros
+        else if (intResponse > TamanhoDaLista(lista) || intResponse <= 0)
         {
-            throw new ArgumentOutOfRangeException($"O número digitado ({intResponse}) não é válido ");
-            
+            Console.WriteLine($"O número digitado ({intResponse}) não é válido ");
+            Console.WriteLine("Digite um número válido: ");
+            Valido = false;
         }
     } while (Valido != true);
     return intResponse - 1;
 }
 
+int TamanhoDaLista(string[] lista)
+{
+    int quantidadeTotalDeItens = 0;
+    foreach (string items in lista)
+    {
+        if (items != null)
+        {
+            quantidadeTotalDeItens++;
+        }
+    }
+    return quantidadeTotalDeItens;
+}
 
 
-// mostrar a lista
+//melhorar apresentação!!!!!
 void MostrandoLista(string[] lista)
 {
+    int contagemDaQuantidadeItens = 0;
     Console.WriteLine("\nLista:\n");
     for (int i = 0; i < lista.Length; i++)
     {
         if (lista[i] != null)
         {
-            Console.WriteLine($"{i + 1}. {lista[i]} ");
+            contagemDaQuantidadeItens++;
+            Console.WriteLine($"{contagemDaQuantidadeItens}. {lista[i]} ");
 
         }
     }
