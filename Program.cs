@@ -1,7 +1,9 @@
 ﻿// programa de lista de compras
 
 
-var lista = new List<string> { };
+using System.Reflection.Metadata.Ecma335;
+
+List<Itens> lista = [];
 string? response = "";
 do
 {
@@ -16,7 +18,7 @@ do
     switch (response)
     {
         case "1":
-           // ConsoleKeyInfo tecla = Console.ReadKey(true);
+            // ConsoleKeyInfo tecla = Console.ReadKey(true);
             do
             {
                 Console.WriteLine("Digite o nome do item(Separe por , se for mais de 1) ou aperte ESC para sair");
@@ -27,7 +29,7 @@ do
                 Console.WriteLine($"Item adicionado! Deseja adicionar mais? s/n");
                 response = ResponseIsNull();
                 char letraInicial = response.First();
-                if (letraInicial != 'n')
+                if (letraInicial != 'n' && letraInicial != 's')
                 {
                     Console.WriteLine("Resposta inválida");
                 }
@@ -58,6 +60,7 @@ do
 
                 Console.WriteLine("1. Deletar");
                 Console.WriteLine("2. Marcar como comprado");
+                Console.WriteLine("3.Adicionar quantidade que deve ser comprada");
                 Console.WriteLine(" Digite 'Voltar' para voltar ao menu anterior ");
 
                 response = ResponseIsNull();
@@ -101,55 +104,20 @@ do
 
 
 
-void MarcarComoComprado(int item, List<string> lista)
+
+void MarcarComoComprado(int item, List<Itens> lista)
 {
-    lista[item] += " (Comprado)";
+    lista[item].FoiComprado = true;
 }
 
-void DeletandoItem(int item, List<string> lista)
+void DeletandoItem(int item, List<Itens> lista)
 {
     Console.WriteLine($"O item: {lista[item]} foi removido!");
     lista.Remove(lista[item]);
     //lista =  OrdenandoItensDaLista(lista);
 }
 
-
-// impossivel alterar local de itens dentro de um array
-// criar uma array nova?
-// List<string> OrdenandoItensDaLista(List<string> lista)
-// {
-//     // percorrer lista e encontrar a quantidade de itens  != null
-//     int indice = 0;
-//     string[] novaLista = new string[TamanhoDaLista(lista)];
-//     //alocar os itens != null de lista na novaLista
-//     for (int i = 0; i < lista.Count; i++)
-//     {
-//         if (lista[i] != null)
-//         {
-//             novaLista[indice] = lista[i];
-//             indice++;
-//         }
-//     }
-//     //recriar lista com os novos itens
-//     lista = new string[TamanhoDaLista(novaLista)];
-//     // alocar itens de novalista para lista
-//     for (int i = 0; i < novaLista.Length; i++)
-//     {
-//         lista[i] = novaLista[i];
-//     }
-//     /*   int totalDeIndices = lista.Length - 1;
-// for (int i = 0; i < lista.Length; i++)
-// {
-//     lista[i] = lista[totalDeIndices];
-//     lista[totalDeIndices] = null;
-//     totalDeIndices--;
-// }*/
-//     return lista;
-// }
-// checar se é valido a conversao e converter para int
-
-
-int ConverterParaInt(string response, List<string> lista)
+int ConverterParaInt(string response, List<Itens> lista)
 {
     int intResponse = 0;
     bool Valido = false;
@@ -179,26 +147,12 @@ int ConverterParaInt(string response, List<string> lista)
     return intResponse - 1;
 }
 
-// int TamanhoDaLista(string[] lista)
-// {
-//     int quantidadeTotalDeItens = 0;
-//     foreach (string items in lista)
-//     {
-//         if (items != null)
-//         {
-//             quantidadeTotalDeItens++;
-//         }
-//     }
-//     return quantidadeTotalDeItens;
-// }
-
-
 //melhorar apresentação!!!!!
-void MostrandoLista(List<string> lista)
+void MostrandoLista(List<Itens> lista)
 {
-    int contagemDaQuantidadeItens = 0;
+    int contagemDaQuantidadeItens = 1;
     Console.WriteLine("\nLista:\n");
-    foreach (string item in lista)
+    foreach (var item in lista)
     {
         Console.WriteLine($".{contagemDaQuantidadeItens} {item}");
         contagemDaQuantidadeItens++;
@@ -206,10 +160,9 @@ void MostrandoLista(List<string> lista)
     Console.WriteLine();
 }
 
-
-
 // criar um metodo de alocar novos itens no array
 void AdicionandoItemNovo(string response)
+
 {
     if (response.Contains(','))
     {
@@ -219,18 +172,19 @@ void AdicionandoItemNovo(string response)
             string? nomeFormatado = nome.ToLower().Trim();
             if (!string.IsNullOrEmpty(nomeFormatado))
             {
-                lista.Add(nomeFormatado);
+                lista.Add(new Itens(nomeFormatado, false, 1, null));
             }
         }
 
     }
     else
     {
-        lista.Add(response);
+        lista.Add(new Itens(response, false, 1, null));
     }
 }
-
 string ResponseIsNull()
+
+
 
 {
     string? entrada;
@@ -243,4 +197,44 @@ string ResponseIsNull()
         }
     } while (string.IsNullOrEmpty(entrada));
     return entrada.ToLower().Trim();
+}
+
+
+public class Itens(string nome, bool comprado, int quantidade, DateOnly? validade)
+{
+    public string NomeDoItem { get; set; } = nome;
+
+    public bool FoiComprado { get; set; } = comprado;
+
+    public int QuantosComprou { get; set; } = quantidade;
+
+    public DateOnly? HoraValidade { get; set; } = validade;
+
+    public override string ToString()
+    {
+        return $"{NomeDoItem.ToUpper()}({ReturnComprado(FoiComprado)})  Quantidade: {QuantosComprou} Validade: {ReturnData()} ";
+    }
+    string ReturnComprado(bool FoiComprado)
+    {
+        if (FoiComprado)
+        {
+            return "(Comprado)";
+        }
+        else
+        {
+            return "Falta Comprar";
+        }
+    }
+
+    string ReturnData()
+    {
+        if (HoraValidade != null)
+        {
+            return $"{HoraValidade}";
+        }
+        else
+        {
+            return "Sem validade";
+        }
+    }
 }
