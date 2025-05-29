@@ -1,8 +1,7 @@
 ﻿// programa de lista de compras
 
 
-
-string[] lista = new string[50];
+var lista = new List<string> { };
 string? response = "";
 do
 {
@@ -17,15 +16,21 @@ do
     switch (response)
     {
         case "1":
-
+           // ConsoleKeyInfo tecla = Console.ReadKey(true);
             do
             {
-                Console.WriteLine("Digite o nome do item(Separe por , se for mais de 1)");
+                Console.WriteLine("Digite o nome do item(Separe por , se for mais de 1) ou aperte ESC para sair");
                 response = ResponseIsNull();
 
                 AdicionandoItemNovo(response);
+                // colocar try e respostas invalidas
                 Console.WriteLine($"Item adicionado! Deseja adicionar mais? s/n");
-                response = Console.ReadLine();
+                response = ResponseIsNull();
+                char letraInicial = response.First();
+                if (letraInicial != 'n')
+                {
+                    Console.WriteLine("Resposta inválida");
+                }
 
 
             } while (response != "n");
@@ -60,7 +65,7 @@ do
                 switch (response)
                 {
                     case "1":
-                        DeletandoItem(item, ref lista);
+                        DeletandoItem(item, lista);
                         response = "voltar";
                         break;
 
@@ -96,55 +101,55 @@ do
 
 
 
-void MarcarComoComprado(int item, string[] lista)
+void MarcarComoComprado(int item, List<string> lista)
 {
     lista[item] += " (Comprado)";
 }
 
-void DeletandoItem(int item, ref string[] lista)
+void DeletandoItem(int item, List<string> lista)
 {
     Console.WriteLine($"O item: {lista[item]} foi removido!");
-    lista[item] = null;
-  lista =  OrdenandoItensDaLista(ref lista);
+    lista.Remove(lista[item]);
+    //lista =  OrdenandoItensDaLista(lista);
 }
 
 
 // impossivel alterar local de itens dentro de um array
 // criar uma array nova?
-string[] OrdenandoItensDaLista(ref string[] lista)
-{
-    // percorrer lista e encontrar a quantidade de itens  != null
-    int indice = 0;
-    string[] novaLista = new string[TamanhoDaLista(lista)];
-    //alocar os itens != null de lista na novaLista
-    for (int i = 0; i < lista.Length; i++)
-    {
-        if (lista[i] != null)
-        {
-            novaLista[indice] = lista[i];
-            indice++;
-        }
-    }
-    //recriar lista com os novos itens
-    lista = new string[TamanhoDaLista(novaLista)];
-    // alocar itens de novalista para lista
-    for (int i = 0; i < novaLista.Length; i++)
-    {
-        lista[i] = novaLista[i];
-    }
-    /*   int totalDeIndices = lista.Length - 1;
-for (int i = 0; i < lista.Length; i++)
-{
-    lista[i] = lista[totalDeIndices];
-    lista[totalDeIndices] = null;
-    totalDeIndices--;
-}*/
-    return lista;
-}
+// List<string> OrdenandoItensDaLista(List<string> lista)
+// {
+//     // percorrer lista e encontrar a quantidade de itens  != null
+//     int indice = 0;
+//     string[] novaLista = new string[TamanhoDaLista(lista)];
+//     //alocar os itens != null de lista na novaLista
+//     for (int i = 0; i < lista.Count; i++)
+//     {
+//         if (lista[i] != null)
+//         {
+//             novaLista[indice] = lista[i];
+//             indice++;
+//         }
+//     }
+//     //recriar lista com os novos itens
+//     lista = new string[TamanhoDaLista(novaLista)];
+//     // alocar itens de novalista para lista
+//     for (int i = 0; i < novaLista.Length; i++)
+//     {
+//         lista[i] = novaLista[i];
+//     }
+//     /*   int totalDeIndices = lista.Length - 1;
+// for (int i = 0; i < lista.Length; i++)
+// {
+//     lista[i] = lista[totalDeIndices];
+//     lista[totalDeIndices] = null;
+//     totalDeIndices--;
+// }*/
+//     return lista;
+// }
 // checar se é valido a conversao e converter para int
 
 
-int ConverterParaInt(string response, string[] lista)
+int ConverterParaInt(string response, List<string> lista)
 {
     int intResponse = 0;
     bool Valido = false;
@@ -164,7 +169,7 @@ int ConverterParaInt(string response, string[] lista)
 
         }
         //lista.Lenght está pegando todos os numeros
-        else if (intResponse > TamanhoDaLista(lista) || intResponse <= 0)
+        else if (intResponse > lista.Count || intResponse <= 0)
         {
             Console.WriteLine($"O número digitado ({intResponse}) não é válido ");
             Console.WriteLine("Digite um número válido: ");
@@ -174,40 +179,36 @@ int ConverterParaInt(string response, string[] lista)
     return intResponse - 1;
 }
 
-int TamanhoDaLista(string[] lista)
-{
-    int quantidadeTotalDeItens = 0;
-    foreach (string items in lista)
-    {
-        if (items != null)
-        {
-            quantidadeTotalDeItens++;
-        }
-    }
-    return quantidadeTotalDeItens;
-}
+// int TamanhoDaLista(string[] lista)
+// {
+//     int quantidadeTotalDeItens = 0;
+//     foreach (string items in lista)
+//     {
+//         if (items != null)
+//         {
+//             quantidadeTotalDeItens++;
+//         }
+//     }
+//     return quantidadeTotalDeItens;
+// }
 
 
 //melhorar apresentação!!!!!
-void MostrandoLista(string[] lista)
+void MostrandoLista(List<string> lista)
 {
     int contagemDaQuantidadeItens = 0;
     Console.WriteLine("\nLista:\n");
-    for (int i = 0; i < lista.Length; i++)
+    foreach (string item in lista)
     {
-        if (lista[i] != null)
-        {
-            contagemDaQuantidadeItens++;
-            Console.WriteLine($"{contagemDaQuantidadeItens}. {lista[i]} ");
-
-        }
+        Console.WriteLine($".{contagemDaQuantidadeItens} {item}");
+        contagemDaQuantidadeItens++;
     }
     Console.WriteLine();
 }
 
 
-// void para adicionar o item a lista
 
+// criar um metodo de alocar novos itens no array
 void AdicionandoItemNovo(string response)
 {
     if (response.Contains(','))
@@ -218,27 +219,15 @@ void AdicionandoItemNovo(string response)
             string? nomeFormatado = nome.ToLower().Trim();
             if (!string.IsNullOrEmpty(nomeFormatado))
             {
-                for (int i = 0; i < lista.Length; i++)
-                {
-                    if (lista[i] == null)
-                    {
-                        lista[i] = nomeFormatado;
-                        break;
-                    }
-                }
+                lista.Add(nomeFormatado);
             }
         }
 
     }
     else
-        for (int i = 0; i < lista.Length; i++)
-        {
-            if (lista[i] == null)
-            {
-                lista[i] = response;
-                break;
-            }
-        }
+    {
+        lista.Add(response);
+    }
 }
 
 string ResponseIsNull()
