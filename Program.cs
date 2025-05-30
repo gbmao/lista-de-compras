@@ -1,9 +1,11 @@
 ﻿// programa de lista de compras
-
-
-using System.Reflection.Metadata.Ecma335;
+using ListaDeCompras.Models;
+using ListaDeCompras.Utils;
+using ListaDeCompras.Services;
 
 List<Itens> lista = [];
+GerenciarLista gerenciador = new(lista);
+//Conversor converter = new(lista);
 string? response = "";
 do
 {
@@ -13,29 +15,29 @@ do
     Console.WriteLine("2. Marcar item como comprado");
     Console.WriteLine("3. Mostre a lista");
     Console.WriteLine("Digite sair para sair.-");
-    response = ResponseIsNull();
+    response = Utilitatios.ResponseIsNull();
 
     switch (response)
     {
         case "1":
-            // ConsoleKeyInfo tecla = Console.ReadKey(true);
-            do
-            {
-                Console.WriteLine("Digite o nome do item(Separe por , se for mais de 1) ou aperte ESC para sair");
-                response = ResponseIsNull();
 
-                AdicionandoItemNovo(response);
+            // do
+            // {
+            //     Console.WriteLine("Digite o nome do item(Separe por , se for mais de 1) ou aperte ESC para sair");
+            //     response = Utilitatios.ResponseIsNull();
+
+                gerenciador.AdicionandoItemNovo(response);
                 // colocar try e respostas invalidas
-                Console.WriteLine($"Item adicionado! Deseja adicionar mais? s/n");
-                response = ResponseIsNull();
-                char letraInicial = response.First();
-                if (letraInicial != 'n' && letraInicial != 's')
-                {
-                    Console.WriteLine("Resposta inválida");
-                }
+                // Console.WriteLine($"Item adicionado! Deseja adicionar mais? s/n");
+                // response = Utilitatios.ResponseIsNull();
+                // char letraInicial = response.First();
+                // if (letraInicial != 'n' && letraInicial != 's')
+                // {
+                //     Console.WriteLine("Resposta inválida");
+                // }
 
 
-            } while (response != "n");
+            // } while (response != "n");
 
             Console.WriteLine("Aperte qualquer tecla para voltar ao menu principal");
             Console.ReadLine();
@@ -46,13 +48,12 @@ do
             // onde iremos marcar os itens que comprar
             while (true)
             {
-                MostrandoLista(lista);
                 Console.WriteLine("Digite o numero do item que deseja alterar ou digite 'voltar' para voltar ao menu anterior: ");
-
+                gerenciador.MostrandoLista(lista);
                 // resolver problema de digitar 2x
-                response = ResponseIsNull();
+                response = Utilitatios.ResponseIsNull();
                 if (response.ToLower().Trim() == "voltar") break;
-                int item = ConverterParaInt(response, lista);
+                int item = Utilitatios.ConverterParaInt(response, lista);
                 Console.WriteLine($"O que você deseja fazer com o item {lista[item]}");
 
                 //     do
@@ -63,20 +64,22 @@ do
                 Console.WriteLine("3.Adicionar quantidade que deve ser comprada");
                 Console.WriteLine(" Digite 'Voltar' para voltar ao menu anterior ");
 
-                response = ResponseIsNull();
+                response = Utilitatios.ResponseIsNull();
 
                 switch (response)
                 {
                     case "1":
-                        DeletandoItem(item, lista);
+                        gerenciador.DeletandoItem(item, lista);
                         response = "voltar";
                         break;
 
                     case "2":
-                        MarcarComoComprado(item, lista);
+                        gerenciador.MarcarComoComprado(item, lista);
                         //response = "voltar";
                         break;
-
+                    case "3":
+                        //criar method para adicionar quantidade 
+                        break;
                     default:
                         Console.WriteLine($"{response} Não é uma opção válida\n");
                         break;
@@ -90,7 +93,7 @@ do
             break;
         case "3":
             // mostra os itens
-            MostrandoLista(lista);
+            gerenciador.MostrandoLista(lista);
             Console.WriteLine("Aperte qualquer tecla para voltar ao menu principal");
             Console.ReadLine();
             break;
@@ -104,137 +107,148 @@ do
 
 
 
+// int ConverterParaInt(string response, List<Itens> lista)
+// {
+//     int intResponse = 0;
+//     bool Valido = false;
+//     do
+//     {
 
-void MarcarComoComprado(int item, List<Itens> lista)
-{
-    lista[item].FoiComprado = true;
-}
-
-void DeletandoItem(int item, List<Itens> lista)
-{
-    Console.WriteLine($"O item: {lista[item]} foi removido!");
-    lista.Remove(lista[item]);
-    //lista =  OrdenandoItensDaLista(lista);
-}
-
-int ConverterParaInt(string response, List<Itens> lista)
-{
-    int intResponse = 0;
-    bool Valido = false;
-    do
-    {
-
-        //response = ResponseIsNull();
+//         //response = Utilitatios.ResponseIsNull();
 
 
-        Valido = int.TryParse(response, out intResponse);
+//         Valido = int.TryParse(response, out intResponse);
 
 
-        if (Valido != true)
-        {
-            Console.WriteLine("Você deve digitar um número válido");
-            Console.WriteLine("Digite um número válido: ");
+//         if (Valido != true)
+//         {
+//             Console.WriteLine("Você deve digitar um número válido");
+//             Console.WriteLine("Digite um número válido: ");
 
-        }
-        //lista.Lenght está pegando todos os numeros
-        else if (intResponse > lista.Count || intResponse <= 0)
-        {
-            Console.WriteLine($"O número digitado ({intResponse}) não é válido ");
-            Console.WriteLine("Digite um número válido: ");
-            Valido = false;
-        }
-    } while (Valido != true);
-    return intResponse - 1;
-}
+//         }
+//         //lista.Lenght está pegando todos os numeros
+//         else if (intResponse > lista.Count || intResponse <= 0)
+//         {
+//             Console.WriteLine($"O número digitado ({intResponse}) não é válido ");
+//             Console.WriteLine("Digite um número válido: ");
+//             Valido = false;
+//         }
+//     } while (Valido != true);
+//     return intResponse - 1;
+// }
 
 //melhorar apresentação!!!!!
-void MostrandoLista(List<Itens> lista)
-{
-    int contagemDaQuantidadeItens = 1;
-    Console.WriteLine("\nLista:\n");
-    foreach (var item in lista)
-    {
-        Console.WriteLine($".{contagemDaQuantidadeItens} {item}");
-        contagemDaQuantidadeItens++;
-    }
-    Console.WriteLine();
-}
+// void MostrandoLista(List<Itens> lista)
+// {
 
-// criar um metodo de alocar novos itens no array
-void AdicionandoItemNovo(string response)
+//     //criar modo de não mostrar lista em caso de vazia
+//     if (lista.Count == 0)
+//     {
+//         Console.WriteLine("A lista está vazia");
 
-{
-    if (response.Contains(','))
-    {
-        string[] nomesCompostos = response.Split(',');
-        foreach (string nome in nomesCompostos)
-        {
-            string? nomeFormatado = nome.ToLower().Trim();
-            if (!string.IsNullOrEmpty(nomeFormatado))
-            {
-                lista.Add(new Itens(nomeFormatado, false, 1, null));
-            }
-        }
-
-    }
-    else
-    {
-        lista.Add(new Itens(response, false, 1, null));
-    }
-}
-string ResponseIsNull()
+//         return;
+//     }
+//     int contagemDaQuantidadeItens = 1;
+//     Console.WriteLine("\nLista:\n");
+//     foreach (var item in lista)
+//     {
+//         Console.WriteLine($".{contagemDaQuantidadeItens} {item}");
+//         contagemDaQuantidadeItens++;
+//     }
+//     Console.WriteLine();
+// }
 
 
+// void AdicionandoItemNovo(string response)
 
-{
-    string? entrada;
-    do
-    {
-        entrada = Console.ReadLine();
-        if (string.IsNullOrEmpty(entrada))
-        {
-            Console.WriteLine("Resposta inválida, favor digitar novamente:");
-        }
-    } while (string.IsNullOrEmpty(entrada));
-    return entrada.ToLower().Trim();
-}
+// {
+//     if (!response.Contains(','))
+//     {
+//         lista.Add(new Itens(response, false, 1, null));
+//     }
+//     else
+//     {
+//         string[] nomesCompostos = response.Split(',');
+//         foreach (string nome in nomesCompostos)
+//         {
+//             string? nomeFormatado = nome.ToLower().Trim();
+//             if (!string.IsNullOrEmpty(nomeFormatado))
+//             {
+//                 lista.Add(new Itens(nomeFormatado, false, 1, null));
+//             }
+//         }
+//     }
+//}
 
+// string ResponseIsNull()
+// {
+//     string? entrada;
+//     do
+//     {
+//         entrada = Console.ReadLine();
+//         if (string.IsNullOrEmpty(entrada))
+//         {
+//             Console.WriteLine("Resposta inválida, favor digitar novamente:");
+//         }
+//     } while (string.IsNullOrEmpty(entrada));
+//     return entrada.ToLower().Trim();
+// }
+// public class GerenciarLista 
+// {
+//     private List<Itens> lista;
 
-public class Itens(string nome, bool comprado, int quantidade, DateOnly? validade)
-{
-    public string NomeDoItem { get; set; } = nome;
+//     public GerenciarLista(List<Itens> listaInicial)
+//     {
+//         lista = listaInicial;
+//     }
+//     public void MarcarComoComprado(int item, List<Itens> lista)
+//     {
+//         lista[item].FoiComprado = true;
+//     }
 
-    public bool FoiComprado { get; set; } = comprado;
+//     public void DeletandoItem(int item, List<Itens> lista)
+//     {
+//         Console.WriteLine($"O item: {lista[item]} foi removido!");
+//         lista.Remove(lista[item]);
 
-    public int QuantosComprou { get; set; } = quantidade;
+//         //lista =  OrdenandoItensDaLista(lista);
+//     }
+// }
+// public class Itens(string nome, bool comprado, int quantidade, DateOnly? validade)
+// {
+//     public string NomeDoItem { get; set; } = nome;
 
-    public DateOnly? HoraValidade { get; set; } = validade;
+//     public bool FoiComprado { get; set; } = comprado;
 
-    public override string ToString()
-    {
-        return $"{NomeDoItem.ToUpper()}({ReturnComprado(FoiComprado)})  Quantidade: {QuantosComprou} Validade: {ReturnData()} ";
-    }
-    string ReturnComprado(bool FoiComprado)
-    {
-        if (FoiComprado)
-        {
-            return "(Comprado)";
-        }
-        else
-        {
-            return "Falta Comprar";
-        }
-    }
+//     public int QuantosComprou { get; set; } = quantidade;
 
-    string ReturnData()
-    {
-        if (HoraValidade != null)
-        {
-            return $"{HoraValidade}";
-        }
-        else
-        {
-            return "Sem validade";
-        }
-    }
-}
+//     public DateOnly? HoraValidade { get; set; } = validade;
+
+//     public override string ToString()
+//     {
+//         return $"{NomeDoItem.ToUpper()}({ReturnComprado(FoiComprado)})  Quantidade: {QuantosComprou} Validade: {ReturnData()} ";
+//     }
+//     string ReturnComprado(bool FoiComprado)
+//     {
+//         if (FoiComprado)
+//         {
+//             return "Comprado";
+//         }
+//         else
+//         {
+//             return "Falta Comprar";
+//         }
+//     }
+
+//     string ReturnData()
+//     {
+//         if (HoraValidade != null)
+//         {
+//             return $"{HoraValidade}";
+//         }
+//         else
+//         {
+//             return "Sem validade";
+//         }
+//     }
+// }
