@@ -42,13 +42,14 @@ public class GerenciarLista
         Console.WriteLine();
     }
 
-    public void AdicionandoItemNovo(string response)
+    public void AdicionandoItemNovo()
 
     {
+        string response;
         do
         {
             Console.WriteLine("Digite o nome do item(Separe por , se for mais de 1) ou aperte ESC para sair");
-            response = Utilitatios.ResponseIsNull();
+             response = Utilitatios.ResponseIsNull();
             if (!response.Contains(','))
             {
                 lista.Add(new Itens(response, false, 1, null));
