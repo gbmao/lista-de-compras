@@ -79,10 +79,12 @@ public class GerenciarLista
         Console.ReadLine();
 
     }
-    public void AdicionarOuRemoverQuantidade(int item)
+    public void AdicionarOuRemoverQuantidade(int item, List<Itens> lista)
     {
         Console.WriteLine($"Qual a quantidade total de {lista[item]} ?");
+        int quantidade = Utilitatios.ConverterParaInt();
 
+        lista[item].QuantosComprou = quantidade;
 
     }
 
@@ -97,7 +99,7 @@ public class Menu(List<Itens> listaInicial)
         while (true)
         {
             int item;
-            bool valido = true;
+            bool valido;
             do
             {
                 Console.WriteLine("Digite o numero do item que deseja alterar ou digite 'voltar' para voltar ao menu anterior: ");
@@ -138,6 +140,7 @@ public class Menu(List<Itens> listaInicial)
                     break;
                 case "3":
                     //criar method para adicionar quantidade 
+                    gerenciador.AdicionarOuRemoverQuantidade(item, listaInicial);
                     break;
                 case "voltar":
                     throw new Exception("Voltando ao menu anterior...");
