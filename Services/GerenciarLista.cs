@@ -75,10 +75,17 @@ public class GerenciarLista
                 Console.WriteLine("Resposta inválida");
             }
         } while (response != "n");
-        Console.WriteLine("Aperte qualquer tecla para voltar ao menu principal");
+        Console.WriteLine("Aperte qualquer tecla para voltar ao menu anterior");
         Console.ReadLine();
 
     }
+    public void AdicionarOuRemoverQuantidade(int item)
+    {
+        Console.WriteLine($"Qual a quantidade total de {lista[item]} ?");
+
+
+    }
+
 }
 
 public class Menu(List<Itens> listaInicial)
@@ -87,39 +94,59 @@ public class Menu(List<Itens> listaInicial)
 
     public void Alteracoes()
     {
-        Console.WriteLine("Digite o numero do item que deseja alterar ou digite 'voltar' para voltar ao menu anterior: ");
-        gerenciador.MostrandoLista(listaInicial);
-        string? response = Utilitatios.ResponseIsNull();
-        if (response.ToLower().Trim() == "voltar") { throw new Exception("Voltando ao menu anterior..."); }
-        int item = Utilitatios.ConverterParaInt(response, listaInicial);
-        Console.WriteLine($"O que você deseja fazer com o item {listaInicial[item]}");
-        Console.WriteLine("1. Deletar");
-        Console.WriteLine("2. Marcar como comprado");
-        Console.WriteLine("3.Adicionar quantidade que deve ser comprada");
-        Console.WriteLine(" Digite 'Voltar' para voltar ao menu anterior ");
+        while (true)
+        {
+            int item;
+            bool valido = true;
+            do
+            {
+                Console.WriteLine("Digite o numero do item que deseja alterar ou digite 'voltar' para voltar ao menu anterior: ");
+                gerenciador.MostrandoLista(listaInicial);
 
-        response = Utilitatios.ResponseIsNull();
-
-        switch (response)
-        {// saindo direto ao menu inicial
-            case "1":
-                gerenciador.DeletandoItem(item, listaInicial);
-
-                break;
-
-            case "2":
-                gerenciador.MarcarComoComprado(item, listaInicial);
-                break;
-            case "3":
-                //criar method para adicionar quantidade 
-                break;
-            case "voltar":
-                throw new Exception("Voltando ao menu anterior...");
+                item = Utilitatios.ConverterParaInt();
+                if (item > listaInicial.Count || item <= 0)
+                {
+                    Console.WriteLine($"O número digitado ({item}) não faz parte da lista ");
+                    valido = false;
+                }
+                else
+                {
+                    valido = true;
+                    item--;
+                }
+            } while (!valido);
 
 
-            default:
-                Console.WriteLine($"{response} Não é uma opção válida\n");
-                break;
+
+             Console.WriteLine($"O que você deseja fazer com o item {listaInicial[item]}");
+            Console.WriteLine("1. Deletar");
+            Console.WriteLine("2. Marcar como comprado");
+            Console.WriteLine("3.Adicionar quantidade que deve ser comprada");
+            Console.WriteLine(" Digite 'Voltar' para voltar ao menu anterior ");
+
+            string? response = Utilitatios.ResponseIsNull();
+
+            switch (response)
+            {// saindo direto ao menu inicial
+                case "1":
+                    gerenciador.DeletandoItem(item, listaInicial);
+
+                    break;
+
+                case "2":
+                    gerenciador.MarcarComoComprado(item, listaInicial);
+                    break;
+                case "3":
+                    //criar method para adicionar quantidade 
+                    break;
+                case "voltar":
+                    throw new Exception("Voltando ao menu anterior...");
+
+
+                default:
+                    Console.WriteLine($"{response} Não é uma opção válida\n");
+                    break;
+            }
         }
     }
 }

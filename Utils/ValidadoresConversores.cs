@@ -10,27 +10,29 @@ public class Utilitatios
     // {
     //     lista = listaInicial;
     // }
-    public static int ConverterParaInt(string response, List<Itens> lista)
+    public static int ConverterParaInt()
     {
         int intResponse = 0;
         bool Valido = false;
         do
         {
+            string? response = Utilitatios.ResponseIsNull();
+            if (response.ToLower().Trim() == "voltar") { throw new Exception("Voltando ao menu anterior..."); }            
             Valido = int.TryParse(response, out intResponse);
 
             if (Valido != true)
             {
-                throw new FormatException("Número inválido");
+                Console.WriteLine("Número inválido");
 
             }
             //lista.Lenght está pegando todos os numeros
-            else if (intResponse > lista.Count || intResponse <= 0)
-            {
-               throw new IndexOutOfRangeException($"O número digitado ({intResponse}) não faz parte da lista ");
-                
-            }
+            // else if (intResponse > lista.Count || intResponse <= 0)
+            // {
+            //    throw new IndexOutOfRangeException($"O número digitado ({intResponse}) não faz parte da lista ");
+
+            // }
         } while (Valido != true);
-        return intResponse - 1;
+        return intResponse;
     }
     public static string ResponseIsNull()
     {

@@ -30,10 +30,6 @@ do
 
             do
             {
-                // Console.WriteLine("Digite o numero do item que deseja alterar ou digite 'voltar' para voltar ao menu anterior: ");
-                // gerenciador.MostrandoLista(lista);
-                // response = Utilitatios.ResponseIsNull();
-                // if (response.ToLower().Trim() == "voltar") break;
 
                 try
                 {
