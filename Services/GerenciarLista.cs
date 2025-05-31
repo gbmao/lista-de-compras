@@ -2,6 +2,7 @@ namespace ListaDeCompras.Services;
 
 using ListaDeCompras.Models;
 using ListaDeCompras.Utils;
+using ListaDeCompras.Services;
 public class GerenciarLista
 {
     private List<Itens> lista;
@@ -49,7 +50,7 @@ public class GerenciarLista
         do
         {
             Console.WriteLine("Digite o nome do item(Separe por , se for mais de 1) ou aperte ESC para sair");
-             response = Utilitatios.ResponseIsNull();
+            response = Utilitatios.ResponseIsNull();
             if (!response.Contains(','))
             {
                 lista.Add(new Itens(response, false, 1, null));
@@ -77,5 +78,48 @@ public class GerenciarLista
         Console.WriteLine("Aperte qualquer tecla para voltar ao menu principal");
         Console.ReadLine();
 
+    }
+}
+
+public class Menu(List<Itens> listaInicial)
+{
+    private readonly GerenciarLista gerenciador = new(listaInicial);
+
+    public void Alteracoes()
+    {
+        Console.WriteLine("Digite o numero do item que deseja alterar ou digite 'voltar' para voltar ao menu anterior: ");
+        gerenciador.MostrandoLista(listaInicial);
+        string? response = Utilitatios.ResponseIsNull();
+        if (response.ToLower().Trim() == "voltar") { throw new Exception("Voltando ao menu anterior..."); }
+        int item = Utilitatios.ConverterParaInt(response, listaInicial);
+        Console.WriteLine($"O que você deseja fazer com o item {listaInicial[item]}");
+        Console.WriteLine("1. Deletar");
+        Console.WriteLine("2. Marcar como comprado");
+        Console.WriteLine("3.Adicionar quantidade que deve ser comprada");
+        Console.WriteLine(" Digite 'Voltar' para voltar ao menu anterior ");
+
+        response = Utilitatios.ResponseIsNull();
+
+        switch (response)
+        {// saindo direto ao menu inicial
+            case "1":
+                gerenciador.DeletandoItem(item, listaInicial);
+
+                break;
+
+            case "2":
+                gerenciador.MarcarComoComprado(item, listaInicial);
+                break;
+            case "3":
+                //criar method para adicionar quantidade 
+                break;
+            case "voltar":
+                throw new Exception("Voltando ao menu anterior...");
+
+
+            default:
+                Console.WriteLine($"{response} Não é uma opção válida\n");
+                break;
+        }
     }
 }

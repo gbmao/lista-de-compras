@@ -20,16 +20,14 @@ public class Utilitatios
 
             if (Valido != true)
             {
-                Console.WriteLine("Você deve digitar um número válido");
-                Console.WriteLine("Digite um número válido: ");
+                throw new FormatException("Número inválido");
 
             }
             //lista.Lenght está pegando todos os numeros
             else if (intResponse > lista.Count || intResponse <= 0)
             {
-                Console.WriteLine($"O número digitado ({intResponse}) não é válido ");
-                Console.WriteLine("Digite um número válido: ");
-                Valido = false;
+               throw new IndexOutOfRangeException($"O número digitado ({intResponse}) não faz parte da lista ");
+                
             }
         } while (Valido != true);
         return intResponse - 1;
